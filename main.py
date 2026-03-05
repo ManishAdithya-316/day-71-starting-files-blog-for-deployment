@@ -13,6 +13,7 @@ from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 # Optional: add contact me email functionality (Day 60)
 # import smtplib
 import os
+from dotenv import load_dotenv
 
 
 '''
@@ -27,6 +28,9 @@ pip3 install -r requirements.txt
 
 This will install the packages from the requirements.txt for this project.
 '''
+
+# Load environment variables - python-dotenv reads your .env file and populates those values into os.environ
+load_dotenv()
 
 
 app = Flask(__name__)
@@ -57,9 +61,11 @@ gravatar = Gravatar(app,
 # CREATE DATABASE
 class Base(DeclarativeBase):
     pass
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI")
-db = SQLAlchemy(model_class=Base)
-db.init_app(app)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DB_URI")  #app.config comes first
+
+db = SQLAlchemy(app,model_class=Base)
+#db.init_app(app)
 
 
 # CONFIGURE TABLES
