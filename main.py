@@ -14,6 +14,7 @@ from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 # import smtplib
 import os
 from dotenv import load_dotenv
+import hashlib
 
 
 '''
@@ -49,14 +50,25 @@ def load_user(user_id):
 
 
 # For adding profile images to the comment section
-gravatar = Gravatar(app,
-                    size=100,
-                    rating='g',
-                    default='retro',
-                    force_default=False,
-                    force_lower=False,
-                    use_ssl=False,
-                    base_url=None)
+# gravatar = Gravatar(app,
+#                     size=100,
+#                     rating='g',
+#                     default='retro',
+#                     force_default=False,
+#                     force_lower=False,
+#                     use_ssl=False,
+#                     base_url=None)
+
+def gravatar_url(email, size=100, default="retro"):
+    email = email.strip().lower().encode("utf-8")
+    hash_email = hashlib.md5(email).hexdigest()
+    return f"https://www.gravatar.com/avatar/{hash_email}?s={size}&d={default}"
+
+@app.template_filter('gravatar')
+def gravatar_filter(email):
+    return gravatar_url(email)
+
+
 
 # CREATE DATABASE
 class Base(DeclarativeBase):
